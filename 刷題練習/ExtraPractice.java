@@ -1,16 +1,21 @@
+import java.util.List;
 import java.util.Scanner;
-
-//更多请阅读：https://www.yiibai.com/java/java-arraylist-to-array.html
+import java.util.ArrayList;
+import java.util.Collections;
 
 public class ExtraPractice {
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
         while (true) {
+
             System.out.println("輸入想要測試的方法");
             System.out.println("1:字串反轉演示");
             System.out.println("2:檢查輸入的字串中是否有匹配的括號");
             System.out.println("3:輸人兩個由小到大排序的數宇串列，將两個陣列合併後返回一個由小到大的串列");
+            System.out.println("4:檢查輸人的正整數是否為質數");
+            System.out.println("5:檢查輸人的句子中最後一個單字的長度");
             int choose = sc.nextInt();
+
             switch (choose) {
                 case 1:
                     System.out.println("字串反轉演示，請輸入一個字串");
@@ -26,7 +31,19 @@ public class ExtraPractice {
                     System.out.println("將2個陣列合併後返回一個由小到大的串列");
                     int[] array1 = { 1, 7, 10, 55 };
                     int[] array2 = { 3, 8, 15, 44, 66 };
-                    // System.out.println(sort(array1, array2));
+                    System.out.println("排序後" + sort(array1, array2));
+                    break;
+                case 4:
+                    System.out.println("檢查輸人的正整數是否為質數，請輸入正整數");
+                    int primeInput = sc.nextInt();
+                    System.out.println(primeCheck(primeInput));
+                    break;
+                case 5:
+                    sc.nextLine();// 用來消耗換行符號
+                    System.out.println("檢查輸人的句子中最後一個單字的長度");
+                    String finalWordInput = sc.nextLine();
+                    System.out.println(finalWord(finalWordInput));
+
                     break;
                 default:
                     System.out.println("輸入錯誤，請重新輸入");
@@ -35,9 +52,10 @@ public class ExtraPractice {
 
     }
 
+    // (1)請編寫一個函數，將輸入的字串反轉過來。
+    // 例：input=Hello world! . output =!dlrow olleH
     public static String reverse(String input) {
-        // (1)請編寫一個函數，將輸入的字串反轉過來。
-        // 例：input=Hello world! . output =!dlrow olleH
+
         String output = "";
         for (int i = 0; i < input.length(); i++) {
             output = input.charAt(i) + output;
@@ -45,11 +63,12 @@ public class ExtraPractice {
         return output;
     }
 
+    // (2) 請編寫一個函數，檢查輸入的字串中是否有匹配的括號(）
+    // 例：input=print('chinalife") •output=true
+    // 例：input=(02)2345-6789) . output=false
+    // 例：input=nlnlayaya ，output =false
     public static boolean checkBrackets(String input) {
-        // (2) 請編寫一個函數，檢查輸入的字串中是否有匹配的括號(）
-        // 例：input=print('chinalife") •output=true
-        // 例：input=(02)2345-6789) . output=false
-        // 例：input=nlnlayaya ，output =false
+
         boolean result = false;
         String[] inputArray = input.split("");
         int leftCheck = 0;
@@ -76,7 +95,6 @@ public class ExtraPractice {
                 }
             }
         }
-
         if (leftCheck == rightCheck && leftNum == rightNum && leftNum != 0) {
             result = true;
         }
@@ -85,31 +103,52 @@ public class ExtraPractice {
 
     // (3)請編寫一個函數，輸人兩個由小到大排序的數宇串列，將两個陣列合併後返回一個由小到大的串列。
     // input=[2,6,8],[1,3,4,5,10,12],output=[1,2,3,4,5,6,8,10,12]
-    // public static LinkedList<Integer> sort(int[] array1, int[] array2) {
-
-    // LinkedList<Integer> linkedList = new LinkedList<>();
-
-    // for (int i = 0; i < array1.length; i++) {
-    // linkedList.add(array1[i]);
-    // }
-    // for (int i = 0; i < array2.length; i++) {
-    // linkedList.add(array2[i]);
-    // }
-
-    // int[] outputArray = new int[linkedList.size()];
-    // for (int i = 0; i < linkedList.size(); i++) {
-    // outputArray[i] = linkedList.get(i);
-    // }
-    // Arrays.sort(outputArray);
-    // return outputArray;
-    // }
+    public static List<Integer> sort(int[] array1, int[] array2) {
+        List<Integer> inputList = new ArrayList<>();
+        for (int i = 0; i < array1.length; i++) {
+            inputList.add(array1[i]);
+        }
+        for (int i = 0; i < array2.length; i++) {
+            inputList.add(array2[i]);
+        }
+        System.out.println("排序前" + inputList);
+        Collections.sort(inputList);
+        return inputList;
+    }
 
     // (4)請編寫一個函數，檢查輸人的正整數是否為質數。
     // 例：input=13, output=true
     // 例：input=4, output=false
+    public static boolean primeCheck(int input) {
+        if (input <= 1) {
+            return false;
+        }
+        for (int i = 2; i < input; i++) {
+            if (input % i == 0) {
+                return false;
+            }
+        }
+        return true;
+    }
 
     // (5)請編寫一個函數，檢查輸人的句子中最後一個單字的長度。
-    // 例：input=1'm fine, thank you. and you? , output =3
+    // 例：input=I'm fine, thank you. and you? , output =3
+    public static int finalWord(String input) {
+        String[] inputArray = input.split("");
+        String regex = ".*[a-zA-Z]+.*";
+        int num = 0;
+        boolean isEn = false;
+        for (int i = inputArray.length - 1; i >= 0; i--) {
+            if (inputArray[i].matches(regex)) {
+                num++;
+                isEn = true;
+            }
+            if (!inputArray[i].matches(regex) && isEn) {
+                break;
+            }
+        }
+        return num;
+    }
 
     // 12/8
     // (1)請編寫一個函數，輸人一個整數串列和一個整數，檢查整数串列中是否有任意兩個數宇相加後等於輸人的第二個整數例：input=[2,8,3, 71, 9•
