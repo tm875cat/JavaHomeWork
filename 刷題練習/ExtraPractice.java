@@ -7,15 +7,14 @@ public class ExtraPractice {
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
         while (true) {
-
             System.out.println("輸入想要測試的方法");
             System.out.println("1:字串反轉演示");
             System.out.println("2:檢查輸入的字串中是否有匹配的括號");
             System.out.println("3:輸人兩個由小到大排序的數宇串列，將两個陣列合併後返回一個由小到大的串列");
             System.out.println("4:檢查輸人的正整數是否為質數");
             System.out.println("5:檢查輸人的句子中最後一個單字的長度");
+            System.out.println("6:檢查整数串列中是否有任意兩個數宇相加後是否等於輸人的第二個整數");
             int choose = sc.nextInt();
-
             switch (choose) {
                 case 1:
                     System.out.println("字串反轉演示，請輸入一個字串");
@@ -43,7 +42,10 @@ public class ExtraPractice {
                     System.out.println("檢查輸人的句子中最後一個單字的長度");
                     String finalWordInput = sc.nextLine();
                     System.out.println(finalWord(finalWordInput));
-
+                    break;
+                case 6:
+                    System.out.println("檢查整数串列中是否有任意兩個數宇相加後是否等於輸人的第二個整數");
+                    
                     break;
                 default:
                     System.out.println("輸入錯誤，請重新輸入");
@@ -151,9 +153,18 @@ public class ExtraPractice {
     }
 
     // 12/8
-    // (1)請編寫一個函數，輸人一個整數串列和一個整數，檢查整数串列中是否有任意兩個數宇相加後等於輸人的第二個整數例：input=[2,8,3, 71, 9•
+    // (1)請編寫一個函數，輸人一個整數串列和一個整數，檢查整数串列中是否有任意兩個數宇相加後是否等於輸人的第二個整數例：input=[2,8,3,7] ,9
     // output=true
-    // 例：input=13, 1, 2,2, 61,2•output=false
+    // 例：input=[3, 1, 2,2, 6],2，output=false
+    public static boolean sumIsSecond(int[] input) {
+        for (int i = 0; i < input.length; i++) {
+            
+            for (int j = 0; j < input.length; j++) {
+
+            }
+        }
+        return false;
+    }
 
     // (2)承(1)，只可使用一次迴圈，含lambda內建的遍歷操作
 
