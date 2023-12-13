@@ -3,10 +3,9 @@ package 作業五;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
-public class Test2 {
-    // 2. 請實作一個具有多重catch區塊的運作的程式？
-
+public class Test3 {
     public static void main(String[] args) {
+        // 3. 請實作一個需要有finally區塊的範例？並說明為什麼。
         Scanner sc = new Scanner(System.in);
         while (true) {
             System.out.println("請輸入商品編號(0~6):");
@@ -18,9 +17,10 @@ public class Test2 {
                 System.out.println("輸入錯誤，請輸入0~6");
             } catch (InputMismatchException e) {
                 System.out.println("輸入錯誤，請輸入數字");
-                sc.next();
-            }
 
+            } finally {
+                sc.next();// 必須執行這行清除輸入緩衝區的非數字字元
+            }
         }
         System.out.println("程式結束");
     }
