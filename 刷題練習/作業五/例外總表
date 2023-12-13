@@ -1,0 +1,43 @@
+檢査例外（Checked Exceptions）:
+IOException
+
+表示輸入/輸出操作可能產生的例外。
+SQLException
+
+表示與數據庫相關的例外。
+非檢査例外（Unchecked Exceptions）:
+ArithmeticException (1)
+表示數學運算異常，例如除以零。
+
+NullPointerException (2)
+表示試圖訪問空物件的例外。
+
+ArrayIndexOutOfBoundsException (3)
+表示嘗試訪問陣列中不存在的索引的例外。
+
+IllegalArgumentException (4)
+表示方法接收到一個不合法的引數。
+
+ClassCastException (5)
+表示嘗試強制轉換類型時的例外。
+
+NumberFormatException (6)
+表示數字格式錯誤的例外。
+
+RuntimeException (7)
+是所有非檢査例外的基類。
+
+IndexOutOfBoundsException (8)
+表示嘗試訪問集合類的容器中不存在的索引的例外。
+
+ConcurrentModificationException (9)
+表示在迭代過程中，被修改結構（例如添加或刪除元素）而引起的例外。
+
+UnsupportedOperationException (10)
+表示不支持的操作引起的例外，通常在不可變對象上呼叫修改方法時拋出。
+
+llegalStateException (11)
+表示對象的當前狀態與操作不一致引起的例外。
+
+NoSuchElementException (12)
+表示試圖檢索不存在的元素引起的例外，通常與集合類相關。
