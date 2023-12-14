@@ -1,0 +1,13 @@
+1. 請設計一個Animal類別，該類別有一個makeSound()方法，並且是抽象類別。創建三個子類別，分別是Dog、Cat和Duck，它們擁有不同的makeSound()實作。
+在主程式中，創建一個Animal陣列，其中包含不同類型的Animal物件，如狗、貓和鴨子。使用迴圈遍歷這個陣列，並呼叫每個Animal物件的makeSound()方法，印出它們發出的聲音。
+
+2.請設計一個Playable介面，該介面包含一個play()方法。創建兩個實現了Playable介面的類別，分別是Instrument和MusicPlayer，它們都實作了play()方法。
+Instrument表示樂器，MusicPlayer表示音樂播放器。在主程式中，創建一個Playable陣列，其中包含不同實現的物件，如樂器和音樂播放器。
+使用迴圈遍歷這個陣列，並呼叫每個物件的play()方法，模擬它們的播放行為。
+
+3. 根據輸入的數字生成相應階層的聖誕樹並寫入christmas_tree.txt檔案
+
+4. 設計一個Java程式，可以將一個original.txt檔案的內容加密產出encrypted.txt，然後再解密回原始內容decrypted.txt。你需要使用InputStream和OutputStream進行檔案的讀寫。
+   實作一個FileEncryptor類別，該類別擁有encrypt和decrypt兩個方法，分別用於加密和解密檔案。
+       加密過程：讀取檔案的每個字節，將其加密，然後寫回檔案。
+       解密過程：讀取檔案的每個字節，將其解密，然後寫回檔案。
