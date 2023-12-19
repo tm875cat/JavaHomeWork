@@ -1,0 +1,29 @@
+public class Main {
+    public static void main(String[] args) {
+        Student student1 = new Student("小明", "David", "001");
+        Student student2 = new Student("小美", "Amy", "003");
+        Student student3 = new Student("小華", "David", "002");
+
+        List<Student> list = new ArrayList<>();
+        list.add(student1);
+        list.add(student2);
+        list.add(student3);
+        list.forEach(element -> System.out.print(element.getStudentId() + " " + element.getStudentName() + " " + element.getEngName() + "\n"));
+        list.sort((s1, s2) -> {
+            int nameComparison = s1.getEngName().compareTo(s2.getEngName());
+            if (nameComparison != 0) {
+                return nameComparison;
+            } else {
+                return s2.getStudentId().compareTo(s1.getStudentId());
+            }
+        });
+        System.out.println("排序後的列表:");
+        list.forEach(element -> System.out.print(element.getStudentId() + " " + element.getStudentName() + " " + element.getEngName() + "\n"));
+        List<Student>filterList = list.stream().filter(student->Integer.parseInt(student.getStudentId())>=2).collect(Collectors.toList());
+        System.out.println("過濾後的列表:");
+        filterList.forEach(element -> System.out.print(element.getStudentId() + " " + element.getStudentName() + " " + element.getEngName() + "\n"));
+        List<String>nameList = list.stream().map(Student::getStudentName).collect(Collectors.toList());
+        System.out.println("姓名列表:");
+        nameList.forEach(System.out::println);
+    }
+}
