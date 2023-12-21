@@ -3,15 +3,17 @@ package 作業八;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 public class PetsService {
     public static void main(String[] args) {
-        PetsService p = new PetsService();
+        String filePath = "pets.txt";
+        System.out.println(checkFirstLine(filePath));
+        parsePet(checkFirstLine(filePath));
 
-        p.readPetsFromFile("刷題練習\\作業八\\pets.txt");
     }
 
     private List<String> headerList;
@@ -23,16 +25,51 @@ public class PetsService {
         }
     }
 
-    public String checkFirstLine(String fileName) {// 檢查第一行有甚麼
+    private static Object parsePet(String data) {// 需將傳入的字串轉成物件回傳
+        String[] str = data.split(",");
+
+        Class firstLineClassName = null;//取得class名稱
+        Class[] params = new Class[4];//指定一個陣列放參數類型
+        params[0] = String.class;
+        params[1] = Integer.TYPE;
+        params[2] = String.class;
+        params[3] = double.class;
+        Constructor build;
+
+
+        Object firstLineObject = null;
+        try {
+            firstLineClassName = Class.forName(str[0]);//取得class名稱
+            build= firstLineClassName.getConstructor(params);//指定一個建構子並放入參數類型
+            // 指定參數內容
+            Object[] firstParam = new Object[4];
+            firstParam[0] = str[1];
+            firstParam[1] = str[2];
+            firstParam[2] = str[3];
+            firstParam[3] = str[4];
+
+            firstLineObject = build.newInstance(firstParam);
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
+            System.out.println("錯誤");
+        } catch (NoSuchMethodException e) {
+            throw new RuntimeException(e);
+        }
+
+
+        System.out.println(firstLineObject);
+
+
+        return null;
+    }
+
+    public static String checkFirstLine(String fileName) {// 檢查第一欄有甚麼
         // 放入文件路徑
         // FileReader類別:讀取檔案中的文字內容
         String firstLine = null;
         try (BufferedReader reader = new BufferedReader(new FileReader(fileName))) {
             // 讀取文件內容
             firstLine = reader.readLine();
-            // while ((line = reader.readLine()) != null) {//用迴圈->全部印出
-            // System.out.println(line);
-            // }
+            firstLine = reader.readLine();
         } catch (IOException e) {
             // 異常
             System.err.println("找不到檔案" + e.getMessage());
@@ -41,7 +78,7 @@ public class PetsService {
     }
 
     public List<Object> readPetsFromFile(String fileName) {// 傳入字串並回傳物件List
-        System.out.println(checkFirstLine("刷題練習\\作業八\\pets.txt"));
+        System.out.println(checkFirstLine("pets.txt"));
         return null;
     }
 
@@ -57,10 +94,5 @@ public class PetsService {
     // 3.5 get declared method by method name
     // 3.6 invoke the associate method with converted value
 
-    private Object parsePet(String data) {// 需將傳入的字串轉成物件回傳
-        String[] str = data.split(",");
-
-        return null;
-    }
 
 }
