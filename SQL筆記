@@ -1,0 +1,57 @@
+--1. 請查詢出89~94(2000-2005)年次的“學生學號,名字”, 依年齡大到小排序
+select   student_id, name 
+from  student_trn 
+WHERE birthday BETWEEN TO_DATE('2000/1/01','YYYY-MM-DD') 
+    AND TO_DATE('2005/12/31','YYYY-MM-DD')
+        ORDER by birthday  ;
+--2. 請查詢出89~94年次(但不要93年次(2004))的“學生學號,名字,西元年份” 依年齡大到小排序 
+select student_id, name,To_CHAR(birthday,'YYYY')as"西元年份"
+from  student_trn 
+WHERE birthday BETWEEN TO_DATE('2000/1/01','YYYY-MM-DD') 
+    AND TO_DATE('2005/12/31','YYYY-MM-DD')AND TO_CHAR(birthday,'YYYY')!='2004'
+        ORDER by birthday;
+--3. 查詢3科考試成績大於60 分的"學號,平均成績", 依學號小到大排序
+select student_id, ROUND(avg(score),2)
+from  score_trn 
+WHERE score>=60
+GROUP by student_id
+having count(distinct course_code)=3
+        ORDER by student_id desc;
+-- 4. 那些學號有重考紀錄，請查出"學號,課程代碼"？ (Having)   
+select student_id,course_code
+ from Score_trn
+ GROUP BY student_id,course_code
+ HAVING count(*)>1;
+-- 5. 請算出各堂課的"課程代碼,最高分, 最低分, 平均成績，修課人數" (avg)(distinct)
+select course_code,MAX(Score) as "最高分",MIN(SCORE) as "最低分",round(AVG(SCORE),2) as"平均成績"
+,count(distinct student_id)as"修課人數" from score_trn
+group by course_code;
+--6. 請取出各堂課的前三名學號和分數, 依課程代碼和名次排序，從小到大
+select student_id,course_code,score
+    from(SELECT student_id,course_code ,score,DENSE_RANK()over(partition by course_code order by score desc)as RANKING FROM score_trn)
+    RANKED_DATA
+    WHERE RANKING<=3
+    order by course_code,score desc;
+--7. 請統計各出生月份的人數，要查出月份和人數, 依人數大到小排序
+select to_char(Birthday,'MM')as"月份",count(*)as"人數" from student_trn
+group by TO_CHAR(Birthday,'MM')
+order by count(*) desc;
+--8. 請找出國文,英文,自然,數學 四科考試總分超過200分的同學之 "學號, 總分"，並依總分排序
+select student_id,sum(score)as"總分"
+from score_trn
+GROUP BY student_id
+HAVING sum(score)>200
+order by "總分" desc;
+--9. 請找出考試分數 5x分的紀錄，顯示欄位有 "課程代碼,學號, 分數"，依分數大到小排序
+select course_code,student_id,score FROM score_trn
+where score BETWEEN 50 and 59 
+order BY score DESC;
+--10.找出有參加國文,英文,自然,數學 四科考試o學號"，學號由小到大
+select student_id ,count(*)as"科目數量"from score_trn
+    group by student_id
+    having COUNT(*)=4 and COUNT(distinct Course_code)=4
+    ORDER by student_id ;
+
+
+
+
