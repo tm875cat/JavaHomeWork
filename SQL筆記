@@ -1,0 +1,132 @@
+--1. 請查詢出89~94(2000-2005)年次的“學生學號,名字”, 依年齡大到小排序
+select   student_id, name 
+from  student_trn 
+WHERE birthday BETWEEN TO_DATE('2000/1/01','YYYY-MM-DD') 
+    AND TO_DATE('2005/12/31','YYYY-MM-DD')
+        ORDER by birthday  ;
+--2. 請查詢出89~94年次(但不要93年次(2004))的“學生學號,名字,西元年份” 依年齡大到小排序 
+select student_id, name,To_CHAR(birthday,'YYYY')as"西元年份"
+from  student_trn 
+WHERE birthday BETWEEN TO_DATE('2000/1/01','YYYY-MM-DD') 
+    AND TO_DATE('2005/12/31','YYYY-MM-DD')AND TO_CHAR(birthday,'YYYY')!='2004'
+        ORDER by birthday;
+--3. 查詢3科考試成績大於60 分的"學號,平均成績", 依學號小到大排序
+select student_id, ROUND(avg(score),2)
+from  score_trn 
+WHERE score>=60
+GROUP by student_id
+having count(distinct course_code)=3
+        ORDER by student_id desc;
+-- 4. 那些學號有重考紀錄，請查出"學號,課程代碼"？ (Having)   
+select student_id,course_code
+ from Score_trn
+ GROUP BY student_id,course_code
+ HAVING count(*)>1;
+-- 5. 請算出各堂課的"課程代碼,最高分, 最低分, 平均成績，修課人數" (avg)(distinct)
+select course_code,MAX(Score) as "最高分",MIN(SCORE) as "最低分",round(AVG(SCORE),2) as"平均成績"
+,count(distinct student_id)as"修課人數" from score_trn
+group by course_code;
+--6. 請取出各堂課的前三名學號和分數, 依課程代碼和名次排序，從小到大
+select student_id,course_code,score
+    from(SELECT student_id,course_code ,score,DENSE_RANK()over(partition by course_code order by score desc)as RANKING FROM score_trn)
+    RANKED_DATA
+    WHERE RANKING<=3
+    order by course_code,score desc;
+--7. 請統計各出生月份的人數，要查出月份和人數, 依人數大到小排序
+select to_char(Birthday,'MM')as"月份",count(*)as"人數" from student_trn
+group by TO_CHAR(Birthday,'MM')
+order by count(*) desc;
+--8. 請找出國文,英文,自然,數學 四科考試總分超過200分的同學之 "學號, 總分"，並依總分排序
+select student_id,sum(score)as"總分"
+from score_trn
+GROUP BY student_id
+HAVING sum(score)>200
+order by "總分" desc;
+--9. 請找出考試分數 5x分的紀錄，顯示欄位有 "課程代碼,學號, 分數"，依分數大到小排序
+select course_code,student_id,score FROM score_trn
+where score BETWEEN 50 and 59 
+order BY score DESC;
+--10.找出有參加國文,英文,自然,數學 四科考試o學號"，學號由小到大
+select student_id ,count(*)as"科目數量"from score_trn
+    group by student_id
+    having COUNT(*)=4 and COUNT(distinct Course_code)=4
+    ORDER by student_id ;
+
+
+
+-----------------------------------------
+
+
+
+--1.查詢有教多堂課的老師姓名， 依姓名排序，倒序
+	SELECT TT2.NAME
+    FROM (
+        SELECT TEACHER_CODE
+        FROM COURSE_TRN2
+        GROUP BY TEACHER_CODE
+        HAVING COUNT(*)>1) TC2
+    INNER JOIN TEACHER_TRN2 TT2
+        ON (TC2.TEACHER_CODE=TT2.TEACHER_CODE);
+
+--2.查出"孔子"老師教的課之成績，不及格成績紀錄，分數要顯示成60分，欄位:課名,學生名, 分數，依成績小到大排序
+	SELECT CT2.COURSE_NAME, SUT2.NAME
+		, CASE WHEN ST2.SCORE<60 THEN 60 ELSE ST2.SCORE END score
+	FROM COURSE_TRN2 CT2
+	INNER JOIN TEACHER_TRN2 TT2
+		ON (CT2.TEACHER_CODE=TT2.TEACHER_CODE)
+	INNER JOIN SCORE_TRN2 ST2
+		ON (CT2.COURSE_CODE=ST2.COURSE_CODE)
+	INNER JOIN STUDENT_TRN2 SUT2
+		ON (ST2.STUDENT_ID=SUT2.STUDENT_ID)
+	WHERE TT2.NAME='孔子';
+
+--3.查詢有參與過所有課考試同學的學號、姓名 ，依學號小到大排序
+
+SELECT ORG_SUT2.STUDENT_ID /*學號*/, ORG_SUT2.NAME /*姓名*/
+FROM STUDENT_TRN2 ORG_SUT2　--學生資料
+LEFT JOIN (
+    SELECT DISTINCT CT_SUT2.STUDENT_ID
+    FROM (
+        SELECT CT2.COURSE_CODE, CT2.COURSE_NAME, SUT2.STUDENT_ID,SUT2.NAME
+        FROM COURSE_TRN2 CT2
+        CROSS JOIN STUDENT_TRN2 SUT2 ) CT_SUT2 --課程學生總清單
+    LEFT JOIN SCORE_TRN2 ST2 --分數紀錄
+        on (CT_SUT2.COURSE_CODE=ST2.COURSE_CODE
+            AND CT_SUT2.STUDENT_ID=ST2.STUDENT_ID)
+    WHERE ST2.SCORE IS NULL) NS
+    ON (ORG_SUT2.STUDENT_ID=NS.STUDENT_ID)
+WHERE NS.STUDENT_ID IS NULL
+ORDER BY ORG_SUT2.STUDENT_ID;
+
+--4.查詢所有課都有考及格的同學的學號、姓名，依學號小到大排序
+
+SELECT ORG_SUT2.STUDENT_ID /*學號*/, ORG_SUT2.NAME /*姓名*/
+FROM STUDENT_TRN2 ORG_SUT2　--學生資料
+LEFT JOIN (
+    SELECT DISTINCT CT_SUT2.STUDENT_ID
+    FROM (
+        SELECT CT2.COURSE_CODE, CT2.COURSE_NAME, SUT2.STUDENT_ID,SUT2.NAME
+        FROM COURSE_TRN2 CT2
+        CROSS JOIN STUDENT_TRN2 SUT2 ) CT_SUT2 --課程學生總清單
+    LEFT JOIN SCORE_TRN2 ST2 --分數紀錄
+        on (CT_SUT2.COURSE_CODE=ST2.COURSE_CODE
+            AND CT_SUT2.STUDENT_ID=ST2.STUDENT_ID
+            AND ST2.SCORE>=60)
+    WHERE ST2.SCORE IS NULL) NS
+    ON (ORG_SUT2.STUDENT_ID=NS.STUDENT_ID)
+WHERE NS.STUDENT_ID IS NULL
+ORDER BY ORG_SUT2.STUDENT_ID;
+
+--5. 那些課有超收的課名, 上限數, 實收數，依課名小到大排序
+SELECT ct2.course_name AS "課名", ct2.student_maxnum AS "上限數" , SN.SNUM AS "實收數"
+FROM COURSE_TRN2 CT2
+LEFT JOIN (
+    SELECT COURSE_CODE, COUNT(DISTINCT STUDENT_ID) SNUM
+    FROM SCORE_TRN2
+    GROUP BY COURSE_CODE) SN
+    ON (CT2.COURSE_CODE=SN.COURSE_CODE)
+WHERE CT2.STUDENT_MAXNUM<SN.SNUM;
+
+
+
+
