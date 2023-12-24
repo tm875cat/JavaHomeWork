@@ -10,26 +10,117 @@ import java.util.Arrays;
 import java.util.List;
 
 public class PetsService {
-    public static void main(String[] args) {
+    private List<String> headerList;
+    private String type;
+    private String name;
+    private int age;
+    private String owner;
+    private int weight;
+
+    public static void main(String[] args) throws IllegalAccessException, InvocationTargetException {
         String filePath = "刷題練習\\作業八\\pets.txt";
         // System.out.println(checkFirstLine(filePath));
-        parsePet(checkLine(filePath ,2));
+        parsePet(checkLine(filePath, 2));
         // 非靜態方法須有實體才能用
-        PetsService pets=new PetsService();
-        String headerInfo=checkLine(filePath,1);//取得header資訊
-  
-
+        PetsService pets = new PetsService();
+        String headerInfo = checkLine(filePath, 1);// 取得header資訊
+        pets.initHearderInfo(headerInfo);// 將header資訊附值給headerList
+        System.out.println(pets.headerList);
+        pets.generateMethodName(pets.headerList);
+        pets.type = "狗";
+        pets.age = 18;
+        pets.name = "來福";
+        pets.owner = "常威";
+        pets.weight = 5;
+        System.out.println(pets.getStringByHeader(pets.headerList, 1));
+        Method myMethod= pets.getMethodName("testMethod");
+        myMethod.invoke(pets);
     }
 
-    private List<String> headerList;
+    private void testMethod() {
+        System.out.println("方法啟動了!!");
+    }
 
-    private  void initHearderInfo(String header) {// 將輸入的字串切割成字串陣列並附值給headerList
+ 
+    private Method getMethodName(String methodName) {   // 3.5 透過方法名稱取得宣告的方法
+        Class<?> className = null;
+        Method getMethod = null;
+        try {
+            className = Class.forName("作業八.PetsService");// 取得class名稱
+            getMethod = className.getDeclaredMethod(methodName);
+        } catch (Exception e) {
+            System.out.println("方法或類別沒找到");
+        }
+        return getMethod;
+    }
+
+    // 3.4 將資料轉換為特定類型。 在這種情況下，我們必須處理 int和double
+    private double changeIntDataType(int intData) {
+        return (double) intData;
+    }
+
+    private int changeDoubleDataType(double doubleData) {
+        return (int) doubleData;
+    }
+
+    private String getStringByHeader(List<String> headerList, int index) {// 3.3 通過標頭名稱獲取相應的字段，並識別字段類型
+
+        switch (index) {
+            case 0:
+                checkType(this.type);
+                return this.type;
+            case 1:
+                checkType(this.name);
+                return this.name;
+            case 2:
+                checkType(this.age);
+
+                return String.valueOf(this.age);
+            case 3:
+                checkType(this.owner);
+                return this.owner;
+            case 4:
+                checkType(this.weight);
+                return String.valueOf(this.weight);
+            default:
+                System.out.println("index錯誤");
+                break;
+        }
+        return type;
+    }
+
+    private static String checkType(Object target) {// 檢查型別
+        String text = (String) target;
+        if (target instanceof String) {
+            return text + "是字串";
+        } else if (target instanceof Integer) {
+            return text + "是Integer";
+        } else if (target instanceof Double) {
+            return text + "是Double";
+        } else {
+            return text + "是其他型別";
+        }
+    }
+
+    private List generateMethodName(List<String> headerList) { // 3.2 從標頭信息生成方法名稱
+        List<String> methodName = new ArrayList<>();
+        for (int i = 0; i < headerList.size(); i++) {
+            methodName.add(headerList.get(i) + "Method");
+            System.out.println(methodName.get(i));
+        }
+        return methodName;
+    }
+
+    private String capitalize(String s) {// 首字變大寫
+        return Character.toUpperCase(s.charAt(0)) + s.substring(1);
+    }
+
+    private void initHearderInfo(String header) {// 將輸入的字串切割成字串陣列並附值給headerList
         if (this.headerList == null) {// headerList為空時
             String[] strs = header.split(",");// 將輸入的字串 header 使用逗號分隔，生成一個字串陣列 strs
             this.headerList = new ArrayList<String>(Arrays.asList(strs));
         }
     }
- 
 
     private static Object parsePet(String data) {// 將傳入的字串轉成物件回傳
         String[] str = data.split(",");
@@ -68,7 +159,7 @@ public class PetsService {
         return firstLineObject;
     }
 
-    public static String checkLine(String fileName ,int n) {// 返回第n欄
+    public static String checkLine(String fileName, int n) {// 返回第n欄
         // 放入文件路徑
         // FileReader類別:讀取檔案中的文字內容
         String line = null;
@@ -86,13 +177,13 @@ public class PetsService {
     }
 
     public List<Object> readPetsFromFile(String fileName) {// 傳入字串並回傳物件List
-  
+
         return null;
     }
 
     // 1. check the first field to know which class we should use V
     // 2. create an object from the first field V
-    // 3. set field value from data via set methods
+    // 3. set field value from data via set methodsV
     // 3.1 get header info
     // 3.2 generate method (function) name from header information
     // 3.3 get the associated field by header name, which should be the same as
